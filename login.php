@@ -9,16 +9,25 @@
     
  ?>
 
- <!DOCTYPE html>
- <html lang="en">
- <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>Login</title>
- </head>
- <body>
-     <div class="container">
-         
-     </div>
+<?php include('header.php') ?>
+    <div class="container-sm bg-light">
+        <div class="row">
+            <div class="col-sm-6">
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input id="username" name="username" type="text" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input id="password" name="password" type="password" class="form-control">
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-6">
+
+            </div>
+        </div>
+    </div>
  </body>
  </html>
