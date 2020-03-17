@@ -50,11 +50,12 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <title><?= $title ?></title>
 </head>
-<body>
+<body class="bg-light">
     <div class="jumbotron jumbotron-fluid pt-1 pb-1 pl-5 pr-5 bg-dark text-light">
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="collapse navbar-collapse d-flex d-flex justify-content-end">
                 <span class="nav-link" id="userlabel">Welcome </span>
+                <a href="login.php" class="nav-link" id="navloglink">login</a>
                 <a href="#" class="nav-link" id="navloglink">logout</a>
             </div>
         </nav>
