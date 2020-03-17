@@ -5,23 +5,74 @@
     Last Updated: March 5, 2020
  -->
  <?php 
+   /*
+   *  Verifies the login information is correct and updates SESSION values
+   *  
+   * $Username The username to verify.
+   * $password The plaintext password to verify against the password of the User.
+   */
+   function VerifyLogin($username, $password){
+      require('connect.php');
+      $valid = false;
 
-    // Temporary, for testing purposes. Will be replaced with proper login using Users table in DB.
-    define('ADMIN_LOGIN','wally');
+      $query = "SELECT Password FROM Users WHERE Username = :username";
+      $statement = $db->prepare($query);
+      $statement->bindValue(':username', filter_var($username, FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+      $statement->execute();
 
-    define('ADMIN_PASSWORD','mypass');
-  
-    if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW'])
-  
-        || ($_SERVER['PHP_AUTH_USER'] != ADMIN_LOGIN)
-  
-        || ($_SERVER['PHP_AUTH_PW'] != ADMIN_PASSWORD)) {
-  
-      header('HTTP/1.1 401 Unauthorized');
-  
-      header('WWW-Authenticate: Basic realm="Our Blog"');
-  
-      exit("Access Denied: Username and password required.");
-  
-    } 
+      // checks the password against the salted and hashed password from the database
+      if ($user = $statement->fetch() password_verify($password, $user['Password'])) {
+         $valid = true;
+      }
+
+      return $valid;
+   }
+
+
+
+   
+
+
+   if (!isset($_SESSION['username']) || !isset($_SESSION['password'])
+      || !VerifyLogin($_SESSION['username'], $_SESSION['password'])) {
+
+   header('location: login.php');
+   exit("Access Denied.");
+   } 
+
+
+   
+
+
+
+
+
+
+
+   // To be implemented as a time out latter
+
+   //$time = $_SERVER['REQUEST_TIME'];
+
+   /**
+   * for a 30 minute timeout, specified in seconds
+   */
+   //$timeout_duration = 1800;
+
+   /**
+   * Here we look for the user's LAST_ACTIVITY timestamp. If
+   * it's set and indicates our $timeout_duration has passed,
+   * blow away any previous $_SESSION data and start a new one.
+   */
+   // if (isset($_SESSION['LAST_ACTIVITY']) && 
+   //    ($time - $_SESSION['LAST_ACTIVITY']) > $timeout_duration) {
+   //    session_unset();
+   //    session_destroy();
+   //    session_start();
+   // }
+
+   /**
+   * Finally, update LAST_ACTIVITY so that our timeout
+   * is based on it and not the user's login time.
+   */
+   //$_SESSION['LAST_ACTIVITY'] = $time;
  ?>
