@@ -24,8 +24,7 @@
         $statement->execute();
 
         // checks the password against the salted and hashed password from the database
-        //if ($user = $statement->fetch() && password_verify($password, $user['Password'])) {
-            if ($password == 'abc'){
+        if ($user = $statement->fetch() && password_verify($password, $user['Password'])) {
             $_SESSION['logged'] = true;
             $_SESSION['usertype'] = $user['UserType'];
             $_SESSION['userid'] = $user['UserID'];
