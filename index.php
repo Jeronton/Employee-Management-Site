@@ -6,6 +6,7 @@
  -->
 
  <?php
+    session_start();
     // the title to be used by header.php
     $title = 'Welcome!';
 
@@ -94,6 +95,9 @@
                 <?php endwhile ?>
             </tbody>
         </table>
+
+        <h3>Session:</h3>
+        <?php print_r($_SESSION) ?>
     </div>
 </body>
 </html>

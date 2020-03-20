@@ -6,6 +6,7 @@
  -->
 
  <?php 
+    session_start();
     /*
    *  Verifies the login information is correct and updates SESSION values
    *  
