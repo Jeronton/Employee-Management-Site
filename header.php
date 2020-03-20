@@ -5,7 +5,6 @@
     Last Updated: March 5, 2020
  -->
  <?php 
-    
     $title;
     // if no title is provided then set default
     if (! isset($title)) {
@@ -17,6 +16,12 @@
     if (! isset($heading)) {
         $heading = "Done Right Contracting's Employee Management Site";
     }
+
+    $name = '';
+    if (isset($_SESSION['firstname'])){
+        $name = $_SESSION['firstname'];
+    }
+
 
     // if no heading is provided then will be blank
     $secondaryheading;
@@ -54,7 +59,7 @@
     <div class="jumbotron jumbotron-fluid pt-1 pb-1 pl-5 pr-5 bg-dark text-light">
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="collapse navbar-collapse d-flex d-flex justify-content-end">
-                <span class="nav-link" id="userlabel">Welcome </span>
+                <span class="nav-link" id="userlabel">Welcome <?= $name ?></span>
                 <a href="login.php" class="nav-link" id="navloglink">login</a>
                 <a href="#" class="nav-link" id="navloglink">logout</a>
             </div>

@@ -33,12 +33,11 @@
    
 
 
-   if (!isset($_SESSION['username']) || !isset($_SESSION['password'])
-      || !VerifyLogin($_SESSION['username'], $_SESSION['password'])) {
-
-   header('location: login.php');
-   exit("Access Denied.");
-   } 
+   // if (!isset($_SESSION['username']) || !isset($_SESSION['password'])
+   //    || !VerifyLogin($_SESSION['username'], $_SESSION['password'])) {
+   //    header('location: login.php');
+   //    exit("Access Denied.");
+   // } 
 
 
    

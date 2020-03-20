@@ -6,6 +6,7 @@
  -->
 
  <?php 
+    session_start();
     /*
    *  Verifies the login information is correct and updates SESSION values
    *  
@@ -18,26 +19,27 @@
         require('connect.php');
         $valid = false;
 
-        $query = "SELECT UserID, Password, UserType, FirstName, LastName, FROM Users WHERE Username = :username";
+        $query = "SELECT UserID, Password, UserType, FirstName, LastName FROM Users WHERE Username = :username";
         $statement = $db->prepare($query);
-        $statement->bindValue(':username', filter_var($username, FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+        $statement->bindValue(':username', $username);
         $statement->execute();
-
-        // checks the password against the salted and hashed password from the database
-        //if ($user = $statement->fetch() && password_verify($password, $user['Password'])) {
-            if ($password == 'abc'){
-            $_SESSION['logged'] = true;
-            $_SESSION['usertype'] = $user['UserType'];
-            $_SESSION['userid'] = $user['UserID'];
-            $_SESSION['firstname'] = $user['FirstName'];
-            $_SESSION['lastname'] = $user['LastName'];
-            $valid = true;
+        if($statement->rowCount() > 0){
+            $user = $statement->fetch();
+            // checks the password against the salted and hashed password from the database
+            if (password_verify($password, $user['Password'])) {
+                $_SESSION['logged'] = true;
+                $_SESSION['usertype'] = $user['UserType'];
+                $_SESSION['userid'] = $user['UserID'];
+                $_SESSION['firstname'] = $user['FirstName'];
+                $_SESSION['lastname'] = $user['LastName'];
+                $valid = true;
+            }
         }
 
         return $valid;
     }
 
-
+    $testmessage = '';
     $usernamevalidclass = '';
     $passwordevalidclass = '';
     $successful = false;
@@ -106,11 +108,21 @@
             <?php if($errormessage): ?>
                 <p class="text-danger"><?= $errormessage ?></p>
             <?php endif ?>
+            <?php if($testmessage): ?>
+                <p class="text-warning"><?= $testmessage ?></p>
+            <?php endif ?>
             <?php if($successful): ?>
                 <p class="text-success">Login successful</p>
             <?php endif ?>
         </form>
     </div>
+    <?php 
+        // ECHO $_SESSION['logged'];
+        // ECHO $_SESSION['usertype'];
+        // ECHO $_SESSION['userid'];
+        // ECHO $_SESSION['firstname'];
+        // ECHO $_SESSION['lastname'];
+        ?>
  </body>
 
     <!-- <script>
