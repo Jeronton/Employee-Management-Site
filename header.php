@@ -61,7 +61,7 @@
             <div class="collapse navbar-collapse d-flex d-flex justify-content-end">
                 <span class="nav-link" id="userlabel">Welcome <?= $name ?></span>
                 <a href="login.php" class="nav-link" id="navloglink">login</a>
-                <a href="#" class="nav-link" id="navloglink">logout</a>
+                <a href="logout.php" class="nav-link" id="navloglink">logout</a>
             </div>
         </nav>
         <h1 class="display-5">Done Right Contracting's Employee Management Site</h1>
