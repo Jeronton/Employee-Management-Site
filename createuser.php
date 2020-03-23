@@ -6,10 +6,11 @@
  -->
 
  <?php 
- 
-    // require('authenticate.php');
-
     session_start();
+    
+    $authusertype = 'admin';
+    require('authenticate.php');
+
     require('connect.php');
 
     // Checks the username against the database to determine if it is unique
@@ -61,6 +62,7 @@
     $usertypevalidclass = '';
     $jobsitevalidclass = '';
     $profileimagevalidclass = '';
+    $emailvalidclass = '';
 
 
     // stores the error to be displayed when an input is invalid.
@@ -72,6 +74,7 @@
     $usertypeerror = '';
     $jobsiteerror = '';
     $profileimageerror = '';
+    $emailerror = '*required';
 
     // Displays an errormessage.
     $errormessage = '';
@@ -110,6 +113,18 @@
         elseif (! filter_input(INPUT_POST, 'lastname', FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/")))) {
             $lnameerror = "*Contains forbidden character(s)";
             $lnamevalidclass = 'is-invalid';
+            $valid = false;
+        }
+
+        // EMAIL
+
+        if (empty($_POST['email'])) {
+            $emailvalidclass = 'is-invalid';
+            $valid = false;
+        }
+        elseif (filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL) == false) {
+            $emailvalidclass = 'is-invalid';
+            $emailerror = '*invalid email address';
             $valid = false;
         }
 
@@ -226,6 +241,16 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="form-group row">
+                        <label for="email" class="col-lg-3 col-form-label">Email:</label>
+                        <div class="col-lg-9">
+                            <input id="email" name="email" type="email" class="form-control <?= $emailvalidclass ?>" required>
+                            <div class="invalid-feedback">
+                                <?= $emailerror ?>
+                            </div>
+                        </div>
+                    </div>
                     
                     <div class="form-group row">
                         <label for="username" class="col-lg-3 col-form-label">Username:</label>
@@ -308,16 +333,16 @@
                     <div class="form-group row">
                         <div class="col-lg-3"></div>
                         <div class="col-lg-9">
-                            <input class="btn btn-primary w-100" type="submit" name="create" value="Create User">
+                            <input class="btn btn-primary w-100 mb-2" type="submit" name="create" value="Create User">
+
+                            <?php if($errormessage): ?>
+                                <p class="text-danger"><?= $errormessage ?></p>
+                            <?php endif ?>
+
+                            <?php if($successmessage): ?>
+                                <p class="text-success"><?= $successmessage ?></p>
+                            <?php endif ?>
                         </div>
-
-                        <?php if($errormessage): ?>
-                            <p class="text-danger"><?= $errormessage ?></p>
-                        <?php endif ?>
-
-                        <?php if($successmessage): ?>
-                            <p class="text-success"><?= $successmessage ?></p>
-                        <?php endif ?>
                     </div>
 
                     

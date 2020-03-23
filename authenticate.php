@@ -1,43 +1,29 @@
 <!-- 
-    Provides logic to authenticate users to the Users Table.
+    Authenticates that a user is logged in, and if $authusertype is specified that the logged in user is that type.
     Author: Jeremy Grift
     Created: March 5, 2020
-    Last Updated: March 5, 2020
+    Last Updated: March 20, 2020
  -->
  <?php 
-   /*
-   *  Verifies the login information is correct and updates SESSION values
-   *  
-   * $Username The username to verify.
-   * $password The plaintext password to verify against the password of the User.
-   */
-   function VerifyLogin($username, $password){
-      require('connect.php');
-      $valid = false;
-
-      $query = "SELECT Password FROM Users WHERE Username = :username";
-      $statement = $db->prepare($query);
-      $statement->bindValue(':username', filter_var($username, FILTER_SANITIZE_FULL_SPECIAL_CHARS));
-      $statement->execute();
-
-      // checks the password against the salted and hashed password from the database
-      if ($user = $statement->fetch() password_verify($password, $user['Password'])) {
-         $valid = true;
-      }
-
-      return $valid;
+   $authusertype;
+   if (empty($authusertype)) {
+      $authusertype = 'any';
    }
-
-
-
    
-
-
-   // if (!isset($_SESSION['username']) || !isset($_SESSION['password'])
-   //    || !VerifyLogin($_SESSION['username'], $_SESSION['password'])) {
-   //    header('location: login.php');
-   //    exit("Access Denied.");
-   // } 
+   if (isset($_SESSION['logged']) && $_SESSION['logged'] == true) {
+      if($authusertype == 'any' || $_SESSION['usertype'] == $authusertype){
+         // valid
+      }
+      else{
+         header('location: insufficientprivileges.php');
+         exit();
+      }
+   }
+   else{
+      // user is not logged in so redirect to login page
+      header('location: login.php');
+      exit();
+   }
 
 
    

@@ -16,6 +16,10 @@
    * Returns true if login successful, false otherwise
    */
    function login($username, $password){
+        // if logged in, log out first
+        $showresponse = false;
+        require('logout.php');
+
         require('connect.php');
         $valid = false;
 
