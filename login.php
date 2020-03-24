@@ -16,6 +16,7 @@
    * Returns true if login successful, false otherwise
    */
    function login($username, $password){
+        session_start();
         // if logged in, log out first
         $showresponse = false;
         require('logout.php');
@@ -69,15 +70,12 @@
 
         if ($validinput) {
             if (login(filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS), $_POST['password'])) {
+                header('location: home.php');
                 $successful = true;
             }
             else{
                 $errormessage = 'Incorrect password or username. Try again.';
             }
-
-            // $_SESSION['password'] = $_POST['password'];
-            // $_SESSION['username'] = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-            // include('authenticate.php');
         }
 
 

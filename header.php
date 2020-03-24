@@ -25,25 +25,27 @@
 
     // if no heading is provided then will be blank
     $secondaryheading;
-
-    // $navlinks;
-    // // if no navlinks provided then set default
-    // if (! isset($navlinks) ) {
-        $navlinks = [
+    if (! isset($secondaryheading)) {
+        $secondaryheading = '';
+    }
+    //print_r($_SESSION['header']['navlinks']);
+    // if no navlinks in session (not logged in) then set them to default
+    if (empty($_SESSION['header']['navlinks']) ) {
+        $_SESSION['header']['navlinks'] = [
             [
                 'href' => 'index.php',
+                'text' => 'Index'
+            ],
+            [
+                'href' => 'home.php',
                 'text' => 'Home'
             ],
             [
-                'href' => '#',
-                'text' => 'Somewhere'
-            ],
-            [
-                'href' => '#',
-                'text' => 'Something'
+                'href' => 'createuser.php',
+                'text' => 'Create User'
             ]
         ];
-    //}
+    }
 
  ?>
 
@@ -59,15 +61,18 @@
     <div class="jumbotron jumbotron-fluid pt-1 pb-1 pl-5 pr-5 bg-dark text-light">
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="collapse navbar-collapse d-flex d-flex justify-content-end">
-                <span class="nav-link" id="userlabel">Welcome <?= $name ?></span>
-                <a href="login.php" class="nav-link" id="navloglink">login</a>
-                <a href="logout.php" class="nav-link" id="navloglink">logout</a>
+                <?php if(isset($_SESSION['logged']) && $_SESSION['logged']): ?>
+                    <span class="nav-link" id="userlabel">Welcome <?= $name ?></span>
+                    <a href="logout.php" class="nav-link" id="navloglink">logout</a>
+                <?php else: ?>
+                    <a href="login.php" class="nav-link" id="navloglink">login</a>
+                <?php endif ?>           
             </div>
         </nav>
-        <h1 class="display-5">Done Right Contracting's Employee Management Site</h1>
-        <p class="lead">some information</p>
-        <nav class="nav nav-pills justify-content-center">
-            <?php foreach($navlinks as $link): ?>
+        <h1 class="display-5"><?= $heading ?></h1>
+        <p class="lead"><?=$secondaryheading ?></p>
+        <nav class="nav justify-content-center">
+            <?php foreach($_SESSION['header']['navlinks'] as $link): ?>
                 <a href="<?= $link['href'] ?>" class="nav-item nav-link text-secondary"><?= $link['text'] ?></a>
             <?php endforeach ?>
         </nav>

@@ -6,8 +6,14 @@
     Last Updated: March 23, 2020
  -->
 <?php 
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
+    
+    
     // determines if the 
     $showresponse;
+
     // Sets showrespnse if unset.
     if (! isset($showresponse)) {
         $showresponse = true;
@@ -18,6 +24,7 @@
     $_SESSION['userid'] = '';
     $_SESSION['firstname'] = '';
     $_SESSION['lastname'] = '';
+    $_SESSION['header']['navlinks'] = array();
 ?>
 
 <?php if($showresponse): ?>
