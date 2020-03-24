@@ -111,7 +111,7 @@
             $lnamevalidclass = 'is-invalid';
             $valid = false;
         }
-        // only allows ,.- and spac
+        // only allows ,.- and space
         elseif (! filter_input(INPUT_POST, 'lastname', FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/")))) {
             $lnameerror = "*Contains forbidden character(s)";
             $lnamevalidclass = 'is-invalid';
@@ -211,12 +211,12 @@
                 $profileimagevalidclass = 'is-invalid';
             }
         }
-        elseif (isset($_FILES['profileimage']['error']) && ($_FILES['profileimage']['error'] > 0)){
-            // is set, but an error occurred.
-            $valid = false;
-            $profileimageerror = 'An error occurred. Error code:' .  $_FILES['profileimage']['error'];
-            $profileimagevalidclass = 'is-invalid';
-        }
+        // elseif (isset($_FILES['profileimage']) && ($_FILES['profileimage']['error'] > 0)){
+        //     // is set, but an error occurred.
+        //     $valid = false;
+        //     $profileimageerror = 'An error occurred. Error code:' .  $_FILES['profileimage']['error'];
+        //     $profileimagevalidclass = 'is-invalid';
+        // }
 
 
 

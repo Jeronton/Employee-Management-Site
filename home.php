@@ -27,7 +27,7 @@
                 ]
             ];
             break;
-
+            basename()
         case 'employee':
             $location ='employeehome.php';
             break;
@@ -39,6 +39,7 @@
         default:
             $location = 'login.php';
             break;
+            
     }
     header("location: {$location}");
  ?>

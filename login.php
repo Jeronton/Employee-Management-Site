@@ -16,7 +16,9 @@
    * Returns true if login successful, false otherwise
    */
    function login($username, $password){
-        session_start();
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
         // if logged in, log out first
         $showresponse = false;
         require('logout.php');
