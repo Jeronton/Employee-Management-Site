@@ -27,6 +27,8 @@
             $unique = true;
         }
         return $unique;
+
+
     }
 
     // Checks that the jobsite exists in the database
@@ -74,7 +76,7 @@
     $usertypeerror = '';
     $jobsiteerror = '';
     $profileimageerror = '';
-    $emailerror = '*required';
+    $emailerror = '*Required';
 
     // Displays an errormessage.
     $errormessage = '';
@@ -184,6 +186,38 @@
             $valid = false;
         }
 
+        // PROFILE IMAGE
+
+        // The variable to add to the database
+        $profileimagepath = null;
+        // only validate if provided, default to no image.
+        if (isset($_FILES['profileimage']) && ($_FILES['profileimage']['error'] === 0)) {
+            include('utilities.php');
+            $temppath = $_FILES['profileimage']['tmp_name'];
+            $filename = $_FILES['profileimage']['name'];
+            $newpath = buildUploadPath($filename);
+            
+            if (validateImage($temppath, $newpath)){
+                // if image is valid, and everything else is valid, meaning user will be entered, save the image
+                if ($valid) {
+                    move_uploaded_file($temppath, $newpath);
+                    $profileimagepath = $newpath;
+                }           
+            }
+            else{
+                // upload is not an image, so error
+                $valid = false;
+                $profileimageerror = 'File must be an image. (jpg, png, gif)';
+                $profileimagevalidclass = 'is-invalid';
+            }
+        }
+        elseif (isset($_FILES['profileimage']['error']) && ($_FILES['profileimage']['error'] > 0)){
+            // is set, but an error occurred.
+            $valid = false;
+            $profileimageerror = 'An error occurred. Error code:' .  $_FILES['profileimage']['error'];
+            $profileimagevalidclass = 'is-invalid';
+        }
+
 
 
 
@@ -202,8 +236,8 @@
             $create->bindValue(':username', $_POST['username']);
             $create->bindValue(':password', password_hash($_POST['password'], PASSWORD_DEFAULT ));
             $create->bindValue(':usertype', $_POST['usertype']);
-            $create->bindValue(':profilepicture', null);
-            $create->bindValue(':jobsite', null);
+            $create->bindValue(':profilepicture', $profileimagepath);
+            $create->bindValue(':jobsite', $_POST['jobsite']);
 
             if ($create->execute()) {
                 $successmessage = "{$_POST['username']} successfully created.";
@@ -219,7 +253,7 @@
 
  <?php include('header.php'); ?>
     <div class="container">
-        <form method="POST" class="needs-validation" novalidate>
+        <form method="POST" class="needs-validation" enctype="multipart/form-data" novalidate>
             <div class="row">
                 <div id="left_col" class="col-md-6">   
                     <div class="form-group row"> 
@@ -317,7 +351,7 @@
                     <div class="form-group row">
                         <label for="profileimage" class="col-lg-4 col-form-label">Profile Image:</label>
                         <div class="col-lg-8">
-                            <input id="profileimage" name="profileimage" type="file" class="form-control <?= $profileimagevalidclass ?>">
+                            <input id="profileimage" name="profileimage" type="file" class="form-control <?= $profileimagevalidclass ?>" accept="image/png, .jpeg, .jpg, image/gif">
                             <div class="invalid-feedback">
                                 <?= $profileimageerror ?>
                             </div>
@@ -355,14 +389,3 @@
     </div>
 </body>
 </html>
-
-<!-- 
-                    <div class="form-group row">
-                        <label for="" class="col-lg-3 col-form-label">:</label>
-                        <div class="col-lg-9">
-                            <input id="" name="" type="text" class="form-control" required>
-                            <div class="invalid-feedback">
-                                *Required
-                            </div>
-                        </div>
-                    </div> -->
