@@ -6,6 +6,8 @@
  -->
  <?php 
     session_start();
+    $authusertype = 'admin';
+    require('authenticate.php');
 
     require('connect.php');
 
