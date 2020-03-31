@@ -27,18 +27,20 @@
                 ]
             ];
             break;
-
         case 'employee':
-            $location ='employeehome.php';
+            $location = 'index.php';
+            //$location ='employeehome.php';
             break;
 
         case 'accountant':
-            $location ='accountanthome.php';
+            $location = 'index.php';
+            //$location ='accountanthome.php';
             break;
         
         default:
             $location = 'login.php';
             break;
+            
     }
     header("location: {$location}");
  ?>

@@ -5,6 +5,11 @@
     Last Updated: March 20, 2020
  -->
  <?php 
+   // If session is not started, start.
+   if (session_status() !== PHP_SESSION_ACTIVE) {
+      session_start();
+   }
+
    $authusertype;
    if (empty($authusertype)) {
       $authusertype = 'any';

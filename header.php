@@ -5,6 +5,11 @@
     Last Updated: March 5, 2020
  -->
  <?php 
+
+    // If session is not started, start.
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
     $title;
     // if no title is provided then set default
     if (! isset($title)) {
