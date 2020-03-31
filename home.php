@@ -37,6 +37,10 @@
                 [
                     'href' => 'addrecord.php',
                     'text' => 'Add Record'
+                ],
+                [
+                    'href' => 'viewusersrecords.php',
+                    'text' => 'View Records'
                 ]
             ];
             break;

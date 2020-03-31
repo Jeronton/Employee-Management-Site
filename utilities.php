@@ -114,4 +114,45 @@
         }
         return false;
     }
+
+    /*
+    * Determines if the currently logged in user has permission to access/edit/delete the record.
+    * A user has permission if it is the owner of the record, or an admin user.
+    *
+    * $recordid: The id of the record in question.
+    *
+    * Returns: True if user has permission, false otherwise.
+    */
+    function DoesUserHavePermissionsForRecord($recordid){
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
+        require('authenticate.php');
+
+        $result = false;
+
+        // if an admin, has access to all records
+        if ( $_SESSION['usertype'] == 'admin') {
+            $result = true;
+        }
+        else {
+            if (!isset($db)) {
+                require('connect.php');
+            }
+            
+            // find the record by id and owner
+            $query = "SELECT 1 FROM employeerecords WHERE UserID = :userid AND RecordID = :recordid";
+            $query = $db->prepare($query);
+            $query->bindValue(':userid', $_SESSION['userid'], PDO::PARAM_INT);
+            $query->bindValue(':recordid', filter_var($recordid, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
+    
+            // if there is no error and an row is returned, then the user has permission as it it their record.
+            if ($query->execute() && $query->rowCount() == 1) {
+                $result = true;
+            }
+        } 
+
+        return $result;
+    }
  ?>

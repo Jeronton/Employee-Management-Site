@@ -14,6 +14,7 @@
 <div class="container">
    <h4>Employee Home</h4>
    <a href="addrecord.php" class="btn btn-primary mb-2">Add Record</a>
+   <a href="viewusersrecords.php" class="btn btn-primary mb-2">View Records</a>
 </div>
 </body>
 </html>

@@ -89,8 +89,9 @@
                         <td><?= $row["Jobsite"] ?></td>
                         <td><?= $row["Date"] ?></td>
                         <td><?= $row["Hours"] ?></td>
-                        <td><?= $row["KMs"] ?></td>
-                        <td><?= $row["Comments"] ?></td>
+                        <td><?= $row["StartOdometer"] ?></td>
+                        <td><?= $row["EndOdometer"] ?></td>
+                        <td><?= html_entity_decode($row["Comments"]) ?></td>
                     </tr>
                 <?php endwhile ?>
             </tbody>

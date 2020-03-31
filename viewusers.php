@@ -23,13 +23,13 @@
  
  <?php include('header.php') ?>
     <div class="container table-responsive">
-        <table class="table">
+        <table class="table table-striped">
             <thead>
                 <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Username</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Current Jobsite</th>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Type</th>
+                    <th>Current Jobsite</th>
                     <th></th>
                     <th></th>
                 </tr>

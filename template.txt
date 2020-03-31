@@ -1,19 +1,19 @@
 <!-- 
-    Description
-    Author: Jeremy Grift
-    Created: March 23, 2020
-    Last Updated: March 23, 2020
- -->
- <?php 
-   // If session is not started, start.
-   if (session_status() !== PHP_SESSION_ACTIVE) {
-      session_start();
-   }
+   Description
+   Author: Jeremy Grift
+   Created: March 23, 2020
+   Last Updated: March 23, 2020
+-->
+   <?php 
+      // If session is not started, start.
+      if (session_status() !== PHP_SESSION_ACTIVE) {
+         session_start();
+      }
 
-    $title;
- ?>
+      $title;
+   ?>
  
- <?php include('header.php') ?>
+   <?php include('header.php') ?>
 
 </body>
 </html>
