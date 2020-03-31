@@ -12,39 +12,8 @@
     require('authenticate.php');
 
     require('connect.php');
-
-    // Checks the username against the database to determine if it is unique
-    function UniqueUsername($username){
-
-        require('connect.php');
-        $unique = false;
-        $query = "SELECT 1 FROM Users WHERE Username = :username";
-        $statement = $db->prepare($query);
-        $statement->bindValue(':username', $username);
-        $statement->execute();
-
-        if($statement->rowCount() == 0){
-            $unique = true;
-        }
-        return $unique;
-
-
-    }
-
-    // Checks that the jobsite exists in the database
-    function JobsiteExists($jobsiteid){
-        require('connect.php');
-        $exists = false;
-        $query = "SELECT 1 FROM Jobsites WHERE JobsiteID = :id";
-        $statement = $db->prepare($query);
-        $statement->bindValue(':id', $jobsiteid);
-        $statement->execute();
-
-        if($statement->rowCount() == 1){
-            $exists = true;
-        }
-        return $exists;
-    }
+    require('utilities.php');
+    
 
     $title = 'Create User';
 
@@ -225,19 +194,19 @@
         if ($valid) {
             require('connect.php');
 
-            $query = "INSERT INTO Users (FirstName, LastName, Username, Password, UserType, ProfilePicture, CurrentJobsite) 
-                    VALUES (:firstname, :lastname, :username, :password, :usertype, :profilepicture, :jobsite)";
+            $query = "INSERT INTO Users (FirstName, LastName, Username, Password, UserType, ProfilePicture, CurrentJobsite, Email) 
+                    VALUES (:firstname, :lastname, :username, :password, :usertype, :profilepicture, :jobsite, :email)";
 
             $create = $db->prepare($query);
 
-            // All inputs are validated at this point
-            $create->bindValue(':firstname', $_POST['firstname']);
-            $create->bindValue(':lastname', $_POST['lastname']);
-            $create->bindValue(':username', $_POST['username']);
+            $create->bindValue(':firstname', filter_input(INPUT_POST, 'firstname', FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/"))));
+            $create->bindValue(':lastname', filter_input(INPUT_POST, 'lastname', FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/"))));
+            $create->bindValue(':username', filter_input(INPUT_POST, 'username', FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9]*$/"))));
             $create->bindValue(':password', password_hash($_POST['password'], PASSWORD_DEFAULT ));
-            $create->bindValue(':usertype', $_POST['usertype']);
+            $create->bindValue(':usertype', filter_input(INPUT_POST, 'usertype', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
             $create->bindValue(':profilepicture', $profileimagepath);
-            $create->bindValue(':jobsite', $_POST['jobsite']);
+            $create->bindValue(':jobsite', filter_input(INPUT_POST, 'jobsite', FILTER_SANITIZE_NUMBER_INT));
+            $create->bindValue(':email', filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL));
 
             if ($create->execute()) {
                 $successmessage = "{$_POST['username']} successfully created.";

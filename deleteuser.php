@@ -1,8 +1,8 @@
 <!-- 
-    Description
+    Functionality to delete the user specified by GET id, must be confirmed with an GET confirm=1.
     Author: Jeremy Grift
-    Created: March 23, 2020
-    Last Updated: March 23, 2020
+    Created: March 24, 2020
+    Last Updated: March 24, 2020
  -->
  <?php 
     $errormessage = '';
@@ -53,7 +53,7 @@
             <h4 class="alert-heading">Success</h4>
             <p><?= $username ?> successfully deleted.</p>
             <hr>
-            <a href="viewusers.php" class="btn btn-primary mb-2">Return to users view.</a>
+            <a href="viewusers.php" class="btn btn-primary mb-2">Return to users view</a>
         </div>
     <?php else: ?>
         <div class="container alert alert-warning" role="alert">
