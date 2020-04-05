@@ -7,8 +7,8 @@
 
 <?php 
     $DB_DSN = 'mysql:host=localhost;dbname=final_project;charset=utf8';
-    $DB_USER = 'serveruser';
-    $DB_PASS = 'gorgonzola7!';
+    $DB_USER = 'final_project';
+    $DB_PASS = 'J9541r9541';
     $db;   
     try {
     	$db = new PDO($DB_DSN, $DB_USER, $DB_PASS);

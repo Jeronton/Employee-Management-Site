@@ -33,4 +33,126 @@
         $pathsegments = [dirname(__FILE__), $folder, $filename];
         return join(DIRECTORY_SEPARATOR, $pathsegments);
     }
+
+
+    // Checks the username against the database to determine if it is unique
+   function UniqueUsername($username){
+
+        require('connect.php');
+        $unique = false;
+        $query = "SELECT 1 FROM Users WHERE Username = :username";
+        $statement = $db->prepare($query);
+        $statement->bindValue(':username', $username);
+        $statement->execute();
+
+        if($statement->rowCount() == 0){
+            $unique = true;
+        }
+        return $unique;
+    }
+
+    // Checks that the jobsite exists in the database
+    function JobsiteExists($jobsiteid){
+        require('connect.php');
+        $exists = false;
+        $query = "SELECT 1 FROM Jobsites WHERE JobsiteID = :id";
+        $statement = $db->prepare($query);
+        $statement->bindValue(':id', $jobsiteid);
+        $statement->execute();
+
+        if($statement->rowCount() == 1){
+            $exists = true;
+        }
+        return $exists;
+    }
+
+    /*
+    * Gets the user of the specific id.
+    *
+    * $id: The userID of the user.
+    * &$invalidmessage an out variable that is used to output an errormessage.
+    *
+    * Returns: An hash with the user data or null if an error occurs.
+    */
+    function getUser($id, &$invalidmessage){
+        if (!isset($db)) {
+            require('connect.php');
+        }
+        $query = "SELECT UserID, FirstName, Email, LastName, Username, UserType, CurrentJobsite, ProfilePicture
+                    FROM Users
+                    WHERE UserID = :userid";
+        $user = $db->prepare($query);
+        $user->bindValue(':userid', $id);
+        if($user->execute()){
+            $user = $user->fetch();   
+            return $user;       
+        }
+        else {
+            $invalidmessage = 'An error occurred while trying to load user.';
+            return null;
+        }
+    }
+
+    /*
+    * Gets the user of the specific id.
+    *
+    * Returns: An hash of all the jobsites or false if an error occurs;
+    */
+    function GetJobsites(){
+        if (!isset($db)) {
+            require('connect.php');
+        }
+
+
+        // load jobsites
+        $jobsites = "SELECT JobsiteID, Name FROM Jobsites WHERE IsActive = true";
+        $jobsites = $db->prepare($jobsites);
+       
+        // if execute is successful, return its result, otherwise return false.
+        if ( $jobsites->execute()) {
+            return $jobsites;
+        }
+        return false;
+    }
+
+    /*
+    * Determines if the currently logged in user has permission to access/edit/delete the record.
+    * A user has permission if it is the owner of the record, or an admin user.
+    *
+    * $recordid: The id of the record in question.
+    *
+    * Returns: True if user has permission, false otherwise.
+    */
+    function DoesUserHavePermissionsForRecord($recordid){
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+
+        require('authenticate.php');
+
+        $result = false;
+
+        // if an admin, has access to all records
+        if ( $_SESSION['usertype'] == 'admin') {
+            $result = true;
+        }
+        else {
+            if (!isset($db)) {
+                require('connect.php');
+            }
+            
+            // find the record by id and owner
+            $query = "SELECT 1 FROM employeerecords WHERE UserID = :userid AND RecordID = :recordid";
+            $query = $db->prepare($query);
+            $query->bindValue(':userid', $_SESSION['userid'], PDO::PARAM_INT);
+            $query->bindValue(':recordid', filter_var($recordid, FILTER_SANITIZE_NUMBER_INT), PDO::PARAM_INT);
+    
+            // if there is no error and an row is returned, then the user has permission as it it their record.
+            if ($query->execute() && $query->rowCount() == 1) {
+                $result = true;
+            }
+        } 
+
+        return $result;
+    }
  ?>

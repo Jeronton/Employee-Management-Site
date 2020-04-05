@@ -28,8 +28,21 @@
             ];
             break;
         case 'employee':
-            $location = 'index.php';
-            //$location ='employeehome.php';
+            $location ='employeehome.php';
+            $_SESSION['header']['navlinks'] = [
+                [
+                    'href' => 'home.php',
+                    'text' => 'Home'
+                ],
+                [
+                    'href' => 'addrecord.php',
+                    'text' => 'Add Record'
+                ],
+                [
+                    'href' => 'viewusersrecords.php',
+                    'text' => 'View Records'
+                ]
+            ];
             break;
 
         case 'accountant':

@@ -1,8 +1,8 @@
 <!-- 
-    Description
+    Functionality to delete the user specified by GET id, must be confirmed with an GET confirm=1.
     Author: Jeremy Grift
-    Created: March 23, 2020
-    Last Updated: March 23, 2020
+    Created: March 24, 2020
+    Last Updated: March 24, 2020
  -->
  <?php 
     $errormessage = '';
@@ -31,8 +31,13 @@
             require('connect.php');
             $query = "DELETE FROM Users WHERE UserID = :userid";
             $user = $db->prepare($query);
-            $user->bindValue(':userid', filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT));
-            $deleted = $user->execute();
+            $user->bindValue(':userid', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), PDO::PARAM_INT);
+            if($user->execute()){
+                $deleted = true;
+            }
+            else{
+                $errormessage = 'An error occurred while attempting to delete ' . $username;
+            }
        }
    }
 
@@ -53,12 +58,12 @@
             <h4 class="alert-heading">Success</h4>
             <p><?= $username ?> successfully deleted.</p>
             <hr>
-            <a href="viewusers.php" class="btn btn-primary mb-2">Return to users view.</a>
+            <a href="viewusers.php" class="btn btn-primary mb-2">Return to users view</a>
         </div>
     <?php else: ?>
         <div class="container alert alert-warning" role="alert">
             <h4 class="alert-heading">Are You Sure?</h4>
-            <p>Are you sure you want to delete <?= $username ?>?</p>
+            <p>Are you sure you want to delete <?= $username ?>? Any records associated with <?= $username ?> will also be deleted. This cannot be undone. </p>
             <hr>
             <a href="deleteuser.php?id=<?=filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT) ?>&confirm=1" class="btn btn-primary mb-2">Delete</a>
             <a href="viewusers.php" class="btn btn-primary mb-2">Cancel</a>

@@ -1,0 +1,15 @@
+/* 
+    Custom styles beyond bootstrap.
+    Author: Jeremy Grift
+    Created: March 31, 2020
+    Last Updated: March 31, 2020 
+*/
+
+
+
+.commentsiframe{
+    margin: 0px;
+    padding: 0px;
+    height: 50px;
+    border: none;
+}

@@ -28,7 +28,7 @@
 
         $query = "SELECT UserID, Password, UserType, FirstName, LastName FROM Users WHERE Username = :username";
         $statement = $db->prepare($query);
-        $statement->bindValue(':username', $username);
+        $statement->bindValue(':username', strtolower($username));
         $statement->execute();
         if($statement->rowCount() > 0){
             $user = $statement->fetch();
