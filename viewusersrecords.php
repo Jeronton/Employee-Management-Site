@@ -49,7 +49,7 @@
     }
 
     $records = "SELECT RecordID, Name AS JobsiteName, Date, Hours, StartOdometer, EndOdometer, Comments 
-                    FROM employeerecords 
+                    FROM Employeerecords 
                     JOIN Jobsites ON Jobsite = JobsiteId
                     WHERE UserID = :userid
                     ORDER BY {$sortby}";

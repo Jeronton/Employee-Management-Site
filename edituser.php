@@ -15,6 +15,8 @@
     require('authenticate.php');
     require('connect.php');
     require('utilities.php');
+    include 'php-image-resize-master/lib/ImageResize.php' ;
+	use \Gumlet\ImageResize;
 
     $title = 'Edit User';
 
@@ -28,6 +30,7 @@
     }
     else{
         $user = getUser(filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT), $invalidmessage);
+        
         if (isset($user)) {
             $title = "Edit {$user['Username']}";
         }    
@@ -120,8 +123,8 @@
            $valid = false;
        }
        // only allows lowercase letters and numbers.
-       elseif (! filter_input(INPUT_POST, 'username', FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9]*$/")))) {
-           $usernameerror = "*Only lowercase letters and numbers are permitted";
+       elseif (! filter_input(INPUT_POST, 'username', FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z0-9]*$/")))) {
+           $usernameerror = "*Only letters and numbers are permitted";
            $usernamevalidclass = 'is-invalid';
            $valid = false;
        }
@@ -152,19 +155,24 @@
 
        // PROFILE IMAGE
 
-       // The variable to add to the database
-       $profileimagepath = null;
+       
+
+       // The variable to add to the database, defaults to the existing path
+       $profileimagepath = $user['ProfilePicture'];
        // only validate if provided, default to no image.
-       if (isset($_FILES['profileimage']) && ($_FILES['profileimage']['error'] === 0)) {
-           include('utilities.php');
+       if (isset($_FILES['profileimage']) && $_FILES['profileimage']['error'] === 0) {
            $temppath = $_FILES['profileimage']['tmp_name'];
-           $filename = $_FILES['profileimage']['name'];
-           $newpath = buildUploadPath($filename);
+           $extension = pathinfo($_FILES['profileimage']['name'], PATHINFO_EXTENSION);
            
-           if (validateImage($temppath, $newpath)){
+           if (validateImage($temppath, $extension)){
                // if image is valid, and everything else is valid, meaning user will be entered, save the image
                if ($valid) {
-                   move_uploaded_file($temppath, $newpath);
+                   $newpath = buildUploadPath("{$_POST['username']}_Profile", $extension);
+                   $imageresize = new ImageResize($temppath);
+                   $imageresize->resizeToLongSide(512);
+                   // save it to the new path
+                   $imageresize->save($newpath);
+                   //move_uploaded_file($temppath, $newpath);
                    $profileimagepath = $newpath;
                }           
            }
@@ -174,15 +182,19 @@
                $profileimageerror = 'File must be an image. (jpg, png, gif)';
                $profileimagevalidclass = 'is-invalid';
            }
-       }
-       // elseif (isset($_FILES['profileimage']) && ($_FILES['profileimage']['error'] > 0)){
-       //     // is set, but an error occurred.
-       //     $valid = false;
-       //     $profileimageerror = 'An error occurred. Error code:' .  $_FILES['profileimage']['error'];
-       //     $profileimagevalidclass = 'is-invalid';
-       // }
+        }
+        // else{
+        //     // is set, but an error occurred.
+        //     $valid = false;
+        //     $profileimageerror = 'An error occurred. Error code:' .  $_FILES['profileimage']['error'];
+        //     $profileimagevalidclass = 'is-invalid';
+        // }
 
-
+        // if delete profile image is checked then set path to null and delete the image.
+        if (isset($_POST['profileimagedelete']) && $_POST['profileimagedelete'] === 'on') {
+            $profileimagepath = null;
+            unlink($user['ProfilePicture']);
+        }
 
 
        // if all inputs are valid update account
@@ -198,7 +210,7 @@
             // All inputs are validated at this point
             $create->bindValue(':firstname', filter_input(INPUT_POST, 'firstname', FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/"))));
             $create->bindValue(':lastname', filter_input(INPUT_POST, 'lastname', FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/"))));
-            $create->bindValue(':username', filter_input(INPUT_POST, 'username', FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9]*$/"))));
+            $create->bindValue(':username', strtolower(filter_input(INPUT_POST, 'username', FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z0-9]*$/")))));
             $create->bindValue(':usertype', filter_input(INPUT_POST, 'usertype', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
             $create->bindValue(':profilepicture', $profileimagepath);
             $create->bindValue(':jobsite', filter_input(INPUT_POST, 'jobsite', FILTER_SANITIZE_NUMBER_INT));
@@ -338,8 +350,17 @@
                             </div>                       
                         </div>
 
-                        <div class="card w-50">
-                            <img src="images/BlankProfile.jpg"" alt="Blank profile picture." class="card-img-top">
+                        <div class="form-group row">
+                            <label for="profileimagedelete" class="col-lg-4 col-form-label">Delete Profile Image:</label>
+                            <div class="col-lg-8">
+                                <input id="profileimagedelete" name="profileimagedelete" type="checkbox" class="h-100">
+                            </div>                       
+                        </div>
+
+                        <div class="d-flex justify-content-center">
+                            <div class="card w-50">
+                                <img src="<?php if($user['ProfilePicture'] != null){echo $user['ProfilePicture'];}else{echo 'images\BlankProfile.jpg';} ?>" alt="Profile picture." class="card-img-top">
+                            </div>
                         </div>
                     </div>
 
@@ -366,5 +387,6 @@
             </form>
         <?php endif ?>
    </div>
+
 </body>
 </html>

@@ -12,25 +12,25 @@
     * newpath ~ the path the image is to be uploaded to, used to get extension.
     * Returns: True if file is an image, false otherwise.
     */
-    function validateImage($temporarypath, $newpath){
+    function validateImage($temporarypath, $extension){
         $valid_mimes = ['image/gif', 'image/jpeg', 'image/png'];
         $valid_extensions = ['gif', 'jpg', 'jpeg', 'png'];
 
         $mime = mime_content_type($temporarypath);
-        $extension = pathinfo($newpath, PATHINFO_EXTENSION);
 
         return in_array( strtolower($mime), $valid_mimes) && in_array(strtolower($extension), $valid_extensions);
     }
 
     /*
-    * Builds the upload path for the an file.
+    * Builds relative the upload path for the an file.
     *
-    * filename: the name and extension of the file.
+    * filename: the name of the file, if includes extension, do not specify $extension.
+    * extension: The extension of the file to be added in addition to the filename, defaults to use only the filename.
     * folder: The folder to put file into, default 'uploads'.
     * Returns: The upload path.
     */
-    function buildUploadPath($filename, $folder = 'uploads'){
-        $pathsegments = [dirname(__FILE__), $folder, $filename];
+    function buildUploadPath($filename, $extension = '', $folder = 'uploads'){
+        $pathsegments = [$folder, $filename . '.' . $extension];
         return join(DIRECTORY_SEPARATOR, $pathsegments);
     }
 

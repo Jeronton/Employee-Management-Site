@@ -13,6 +13,8 @@
 
     require('connect.php');
     require('utilities.php');
+    include 'php-image-resize-master/lib/ImageResize.php' ;
+	use \Gumlet\ImageResize;
     
 
     $title = 'Create User';
@@ -106,9 +108,9 @@
             $usernamevalidclass = 'is-invalid';
             $valid = false;
         }
-        // only allows lowercase letters and numbers.
-        elseif (! filter_input(INPUT_POST, 'username', FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9]*$/")))) {
-            $usernameerror = "*Only lowercase letters and numbers are permitted";
+        // only allows letters and numbers (will auto lowercase username).
+        elseif (! filter_input(INPUT_POST, 'username', FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z0-9]*$/")))) {
+            $usernameerror = "*Only letters and numbers are permitted";
             $usernamevalidclass = 'is-invalid';
             $valid = false;
         }
@@ -160,16 +162,19 @@
         // The variable to add to the database
         $profileimagepath = null;
         // only validate if provided, default to no image.
-        if (isset($_FILES['profileimage']) && ($_FILES['profileimage']['error'] === 0)) {
-            include('utilities.php');
+        if (isset($_FILES['profileimage']) && $_FILES['profileimage']['error'] === 0) {
             $temppath = $_FILES['profileimage']['tmp_name'];
-            $filename = $_FILES['profileimage']['name'];
-            $newpath = buildUploadPath($filename);
+            $extension = pathinfo($_FILES['profileimage']['name'], PATHINFO_EXTENSION);
             
-            if (validateImage($temppath, $newpath)){
+            if (validateImage($temppath, $extension)){
                 // if image is valid, and everything else is valid, meaning user will be entered, save the image
                 if ($valid) {
-                    move_uploaded_file($temppath, $newpath);
+                    $newpath = buildUploadPath("{$_POST['username']}_Profile", $extension);
+                    $imageresize = new ImageResize($temppath);
+                    $imageresize->resizeToLongSide(512);
+                    // save it to the new path
+                    $imageresize->save($newpath);
+                    //move_uploaded_file($temppath, $newpath);
                     $profileimagepath = $newpath;
                 }           
             }
@@ -180,12 +185,13 @@
                 $profileimagevalidclass = 'is-invalid';
             }
         }
-        // elseif (isset($_FILES['profileimage']) && ($_FILES['profileimage']['error'] > 0)){
+        // else{
         //     // is set, but an error occurred.
         //     $valid = false;
         //     $profileimageerror = 'An error occurred. Error code:' .  $_FILES['profileimage']['error'];
         //     $profileimagevalidclass = 'is-invalid';
         // }
+
 
 
 
@@ -201,7 +207,7 @@
 
             $create->bindValue(':firstname', filter_input(INPUT_POST, 'firstname', FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/"))));
             $create->bindValue(':lastname', filter_input(INPUT_POST, 'lastname', FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/"))));
-            $create->bindValue(':username', filter_input(INPUT_POST, 'username', FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-z0-9]*$/"))));
+            $create->bindValue(':username', strtolower(filter_input(INPUT_POST, 'username', FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z0-9]*$/")))));
             $create->bindValue(':password', password_hash($_POST['password'], PASSWORD_DEFAULT ));
             $create->bindValue(':usertype', filter_input(INPUT_POST, 'usertype', FILTER_SANITIZE_FULL_SPECIAL_CHARS));
             $create->bindValue(':profilepicture', $profileimagepath);
@@ -327,7 +333,7 @@
                         </div>                       
                     </div>
 
-                    <div class="card w-50">
+                    <div class="card w-75">
                         <img src="images/BlankProfile.jpg"" alt="Blank profile picture." class="card-img-top">
                     </div>
                 </div>

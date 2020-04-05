@@ -26,7 +26,7 @@
         require('connect.php');
         $valid = false;
 
-        $query = "SELECT UserID, Password, UserType, FirstName, LastName FROM Users WHERE Username = :username";
+        $query = "SELECT UserID, Username, Password, UserType, FirstName, LastName FROM Users WHERE Username = :username";
         $statement = $db->prepare($query);
         $statement->bindValue(':username', strtolower($username));
         $statement->execute();
@@ -37,6 +37,7 @@
                 $_SESSION['logged'] = true;
                 $_SESSION['usertype'] = $user['UserType'];
                 $_SESSION['userid'] = $user['UserID'];
+                $_SESSION['username'] = $user['Username'];
                 $_SESSION['firstname'] = $user['FirstName'];
                 $_SESSION['lastname'] = $user['LastName'];
                 $valid = true;
