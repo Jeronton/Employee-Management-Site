@@ -5,9 +5,14 @@
     Last Updated: March 23, 2020
  -->
  <?php 
-    session_start();
+   // If session is not started, start.
+   if (session_status() !== PHP_SESSION_ACTIVE) {
+   session_start();
+   }
+   $authusertype = 'admin';
+   require('authenticate.php');
 
-    $title = 'Home';
+   $title = 'Home';
  ?>
  
 <?php include('header.php'); ?>

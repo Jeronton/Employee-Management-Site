@@ -1,10 +1,12 @@
-<!-- 
+ <?php 
+ /*
     Authenticates that a user is logged in, and if $authusertype is specified that the logged in user is that type.
     Author: Jeremy Grift
     Created: March 5, 2020
     Last Updated: March 20, 2020
- -->
- <?php 
+*/
+
+
    // If session is not started, start.
    if (session_status() !== PHP_SESSION_ACTIVE) {
       session_start();
@@ -16,8 +18,8 @@
    }
    
    if (isset($_SESSION['logged']) && $_SESSION['logged'] == true) {
-      if($authusertype == 'any' || $_SESSION['usertype'] == $authusertype){
-         // valid
+      if($_SESSION['usertype'] == 'admin' || $authusertype == 'any' || $_SESSION['usertype'] == $authusertype){
+         // valid if admin, or matches required user type.
       }
       else{
          header('location: insufficientprivileges.php');

@@ -1,10 +1,12 @@
-<!-- 
+ <?php 
+/*
     Utility functions to be used throughout the project.
     Author: Jeremy Grift
     Created: March 23, 2020
     Last Updated: March 23, 2020
- -->
- <?php 
+*/
+
+
     /*
     * Validates that the image is indeed an image.
     * 
@@ -93,6 +95,7 @@
         }
     }
 
+
     /*
     * Gets the user of the specific id.
     *
@@ -155,4 +158,19 @@
 
         return $result;
     }
- ?>
+
+
+
+    /**
+     * Check if a string is a valid date(time)
+     *
+     * @param string $datestring The date to validate.
+     * @param string $format The format of the date.
+     * @return bool True if valid, false otherwise.
+     */
+    function validateDate($datestring, $format = 'Y-m-d') {
+        $date = DateTime::createFromFormat($format, $datestring);
+        return $date && DateTime::getLastErrors()["warning_count"] == 0 && DateTime::getLastErrors()["error_count"] == 0;
+    }
+
+?>

@@ -98,14 +98,16 @@
             <div class="container table-responsive">
                 <table class="table table-striped">   
                     <thead>
-                        <th>Date</th>
-                        <th>Hours</th>
-                        <th>Start Odometer</th>
-                        <th>End Odometer</th>
-                        <th>Jobsite</th>
-                        <th>Comments</th>
-                        <th></th>
-                        <th></th>
+                        <tr>
+                            <th>Date</th>
+                            <th>Hours</th>
+                            <th>Start Odometer</th>
+                            <th>End Odometer</th>
+                            <th>Jobsite</th>
+                            <th>Comments</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
                     </thead> 
                     <tbody>
                         <?php while($row = $records->fetch()): ?>

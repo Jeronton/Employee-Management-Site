@@ -169,7 +169,7 @@
                if ($valid) {
                    $newpath = buildUploadPath("{$_POST['username']}_Profile", $extension);
                    $imageresize = new ImageResize($temppath);
-                   $imageresize->resizeToLongSide(512);
+                   $imageresize->crop(512,512);
                    // save it to the new path
                    $imageresize->save($newpath);
                    //move_uploaded_file($temppath, $newpath);
@@ -222,6 +222,10 @@
 
                 // update the user to reflect the changes to the user.
                 $user = getUser(filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT), $invalidmessage);
+                if ($_SESSION['userid'] == $user['UserID']) {
+                    $_SESSION['profilepicture'] = $user['ProfilePicture'];
+                }
+                
             }
             else {
                 $errormessage = 'An error occurred when updating user, please try again.';
@@ -288,26 +292,6 @@
                             </div>
                         </div>
 
-                        <!-- <div class="form-group row">
-                            <label for="password" class="col-lg-3 col-form-label">Password:</label>
-                            <div class="col-lg-9">
-                                <input id="password" name="password" type="password" class="form-control <?= $passwordvalidclass ?>"  required>
-                                <div class="invalid-feedback">
-                                    <?= $passworderror ?> 
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="confirmpassword" class="col-lg-3 col-form-label">Confirm Password:</label>
-                            <div class="col-lg-9">
-                                <input id="confirmpassword" name="confirmpassword" type="password" class="form-control <?= $passconfirmvalidclass ?>" required>
-                                <div class="invalid-feedback">
-                                    <?= $passconfirmerror ?>
-                                </div>
-                            </div>
-                        </div> -->
-
                         <div class="form-group row">
                             <label for="usertype" class="col-lg-3 col-form-label">Account Type:</label>
                             <div class="col-lg-9">
@@ -349,13 +333,14 @@
                                 </div>
                             </div>                       
                         </div>
-
-                        <div class="form-group row">
-                            <label for="profileimagedelete" class="col-lg-4 col-form-label">Delete Profile Image:</label>
-                            <div class="col-lg-8">
-                                <input id="profileimagedelete" name="profileimagedelete" type="checkbox" class="h-100">
-                            </div>                       
-                        </div>
+                        <?php if(!empty($user['ProfilePicture'])): ?>
+                            <div class="form-group row">
+                                <label for="profileimagedelete" class="col-lg-4 col-form-label">Delete Profile Image:</label>
+                                <div class="col-lg-8">
+                                    <input id="profileimagedelete" name="profileimagedelete" type="checkbox" class="h-100">
+                                </div>                       
+                            </div>
+                        <?php endif ?>
 
                         <div class="d-flex justify-content-center">
                             <div class="card w-50">

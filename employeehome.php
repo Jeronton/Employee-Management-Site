@@ -5,9 +5,12 @@
     Last Updated: March 30, 2020
  -->
  <?php 
-    session_start();
+   session_start();
 
-    $title = 'Home';
+   $authusertype = 'employee';
+   require('authenticate.php');
+   
+   $title = 'Home';
  ?>
  
 <?php include('header.php'); ?>

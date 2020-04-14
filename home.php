@@ -5,7 +5,10 @@
     Last Updated: March 23, 2020
  -->
  <?php 
-    session_start();
+    // If session is not started, start.
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+     }
 
     $location;
     require('authenticate.php');
@@ -46,8 +49,25 @@
             break;
 
         case 'accountant':
-            $location = 'index.php';
-            //$location ='accountanthome.php';
+            $location ='accountanthome.php';
+            $_SESSION['header']['navlinks'] = [
+                [
+                    'href' => 'home.php',
+                    'text' => 'Home'
+                ],
+                [
+                    'href' => 'addrecord.php',
+                    'text' => 'Add Record'
+                ],
+                [
+                    'href' => 'viewusersrecords.php',
+                    'text' => 'View Personal Records'
+                ],
+                [
+                    'href' => 'viewrecords.php',
+                    'text' => 'View Records'
+                ]
+            ];
             break;
         
         default:

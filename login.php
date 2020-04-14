@@ -1,21 +1,27 @@
-<!-- 
+
+
+ <?php 
+
+/*
     Provides the form to for a user to login.
     Author: Jeremy Grift
     Created: March 5, 2020
     Last Updated: March 16, 2020
- -->
+*/
+    // If session is not started, start.
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
 
- <?php 
-    session_start();
     /*
-   *  Verifies the login information is correct and updates SESSION values
-   *  
-   * $Username The username to verify.
-   * $password The plaintext password to verify against the password of the User.
-   * 
-   * Returns true if login successful, false otherwise
-   */
-   function login($username, $password){
+    *  Verifies the login information is correct and updates SESSION values
+    *  
+    * $Username The username to verify.
+    * $password The plaintext password to verify against the password of the User.
+    * 
+    * Returns true if login successful, false otherwise
+    */
+    function login($username, $password){
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
         }
@@ -26,7 +32,7 @@
         require('connect.php');
         $valid = false;
 
-        $query = "SELECT UserID, Username, Password, UserType, FirstName, LastName FROM Users WHERE Username = :username";
+        $query = "SELECT UserID, Username, Password, UserType, FirstName, LastName, ProfilePicture, Email FROM Users WHERE Username = :username";
         $statement = $db->prepare($query);
         $statement->bindValue(':username', strtolower($username));
         $statement->execute();
@@ -40,6 +46,8 @@
                 $_SESSION['username'] = $user['Username'];
                 $_SESSION['firstname'] = $user['FirstName'];
                 $_SESSION['lastname'] = $user['LastName'];
+                $_SESSION['profilepicture'] = $user['ProfilePicture'];
+                $_SESSION['useremail'] = $user['Email'];
                 $valid = true;
             }
         }

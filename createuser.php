@@ -171,7 +171,7 @@
                 if ($valid) {
                     $newpath = buildUploadPath("{$_POST['username']}_Profile", $extension);
                     $imageresize = new ImageResize($temppath);
-                    $imageresize->resizeToLongSide(512);
+                    $imageresize->crop(512,512);
                     // save it to the new path
                     $imageresize->save($newpath);
                     //move_uploaded_file($temppath, $newpath);
