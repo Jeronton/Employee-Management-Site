@@ -97,7 +97,7 @@
 
 
     /*
-    * Gets the user of the specific id.
+    * Gets all jobsites in the database
     *
     * Returns: An hash of all the jobsites or false if an error occurs;
     */
@@ -108,7 +108,7 @@
 
 
         // load jobsites
-        $jobsites = "SELECT JobsiteID, Name FROM Jobsites WHERE IsActive = true";
+        $jobsites = "SELECT JobsiteID, Name, Description, Address, IsActive FROM Jobsites";
         $jobsites = $db->prepare($jobsites);
        
         // if execute is successful, return its result, otherwise return false.

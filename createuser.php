@@ -198,8 +198,9 @@
 
         // if all inputs are valid create account
         if ($valid) {
-            require('connect.php');
-
+            if (!isset($db)) {
+                require('connect.php');
+            }
             $query = "INSERT INTO Users (FirstName, LastName, Username, Password, UserType, ProfilePicture, CurrentJobsite, Email) 
                     VALUES (:firstname, :lastname, :username, :password, :usertype, :profilepicture, :jobsite, :email)";
 

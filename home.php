@@ -1,10 +1,11 @@
-<!-- 
+
+ <?php 
+ /*
     Directs the user to their respective home page, based on the type of user.
     Author: Jeremy Grift
     Created: March 23, 2020
-    Last Updated: March 23, 2020
- -->
- <?php 
+*/
+
     // If session is not started, start.
     if (session_status() !== PHP_SESSION_ACTIVE) {
         session_start();
@@ -12,6 +13,7 @@
 
     $location;
     require('authenticate.php');
+
     switch ($_SESSION['usertype']) {
         case 'admin':
             $location ='adminhome.php';
@@ -27,6 +29,10 @@
                 [
                     'href' => 'viewusers.php',
                     'text' => 'View Users'
+                ],
+                [
+                    'href' => 'viewjobsites.php',
+                    'text' => 'View Jobsites'
                 ]
             ];
             break;
