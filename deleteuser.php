@@ -5,6 +5,9 @@
     Last Updated: March 24, 2020
  -->
  <?php 
+    $authusertype = 'admin';
+    require('authenticate.php');
+
     $errormessage = '';
     $deleted = false;
     $username = 'user';
